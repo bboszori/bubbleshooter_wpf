@@ -1,31 +1,44 @@
 ﻿namespace Oenik_prog3_2017osz_iapw0k
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Media;
 
     public class Bubble
     {
         private static Random rand = new Random();
+        private int screenheight;
+        private int screenwidth;
+        private int posX;
+        private int posY;
 
-
-        public Bubble(int screenHeight, int screeWidth)
+        public Bubble(int screenHeight, int screeWidth, int row, int column)
         {
-            this.Ball = new EllipseGeometry(new Point(5, 5), 5, 5);
+            screenheight = screenHeight;
+            screenwidth = screeWidth -15;
+            if (row % 2 == 0)
+            {
+                posX = (column * (screenwidth / 10)) + 30;
+            }
+            else
+            {
+                posX = (column * (screenwidth / 10)) + 15;
+            }
+            posY = (row * 24) +15;
+            Ball = new EllipseGeometry(new Point(posX, posY), screenwidth / 20, screenwidth / 20);
+            ColorNumber = rand.Next(0, 5);
         }
 
         public Point Location { get; set; }
 
-        protected Geometry Ball { get; set; }
+        public int ColorNumber { get; private set; }
+
+        public Geometry Ball { get; set; }
 
         public Geometry GetTransformedGeometry()
         {
-            Geometry copy = this.Ball.Clone();
-            copy.Transform = new TranslateTransform(this.Location.X, this.Location.Y);
+            Geometry copy = Ball.Clone();
+            copy.Transform = new TranslateTransform(Location.X, Location.Y);
 
             return copy.GetFlattenedPathGeometry();
         }
