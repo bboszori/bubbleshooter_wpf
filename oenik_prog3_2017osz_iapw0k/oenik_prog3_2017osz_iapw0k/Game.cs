@@ -15,8 +15,10 @@
         {
             this.screenWidth = screenWidth;
             this.screenHeight = screenHeight;
-            ToStartingState();
+            this.ToStartingState();
         }
+
+        public Player ThePlayer { get; set; }
 
         public Bubble Bullet { get; set; }
 
@@ -24,25 +26,28 @@
 
         private void ToStartingState()
         {
-            Bullet = new Bubble(screenHeight, screenWidth, 0, 0)
-            {
-                Location = new Point(screenWidth, screenHeight / 2)
-            };
+            this.Bullet = new Bubble(this.screenHeight, this.screenWidth);
+            this.ThePlayer = new Player(this.screenWidth / 2, this.screenHeight - 25);
 
-            Bubbles = new List<Bubble[]>();
+            this.Bubbles = new List<Bubble[]>();
             for (int i = 0; i < 5; i++)
             {
                 Bubble[] bubbleRow = new Bubble[10];
                 for (int j = 0; j < 10; j++)
                 {
-                    bubbleRow[j] = new Bubble(screenHeight, screenWidth, i, j);
+                    bubbleRow[j] = new Bubble(this.screenHeight, this.screenWidth, i, j);
                 }
 
-                Bubbles.Add(bubbleRow);
+                this.Bubbles.Add(bubbleRow);
             }
 
-            dx = 5;
-            dy = 0;
+            this.dx = 5;
+            this.dy = 0;
+        }
+
+        private void Shoot()
+        {
+                
         }
     }
 }

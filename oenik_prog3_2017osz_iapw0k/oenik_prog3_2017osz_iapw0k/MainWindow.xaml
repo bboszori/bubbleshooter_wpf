@@ -12,8 +12,8 @@
             <RowDefinition Height="450*"/>
             <RowDefinition Height="15"/>
         </Grid.RowDefinitions>
-        <local:GameFrameworkElement Grid.Row="1"/>
 
+        <local:GameFrameworkElement Grid.Row="1" />
 
     </Grid>
 </Window>

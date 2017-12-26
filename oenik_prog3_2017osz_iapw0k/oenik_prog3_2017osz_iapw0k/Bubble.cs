@@ -4,7 +4,7 @@
     using System.Windows;
     using System.Windows.Media;
 
-    public class Bubble
+    public class Bubble : GameItem
     {
         private static Random rand = new Random();
         private int screenheight;
@@ -14,33 +14,36 @@
 
         public Bubble(int screenHeight, int screeWidth, int row, int column)
         {
-            screenheight = screenHeight;
-            screenwidth = screeWidth -15;
+            this.screenheight = screenHeight;
+            this.screenwidth = screeWidth - 15;
             if (row % 2 == 0)
             {
-                posX = (column * (screenwidth / 10)) + 30;
+                this.posX = (column * (this.screenwidth / 10)) + 30;
             }
             else
             {
-                posX = (column * (screenwidth / 10)) + 15;
+                this.posX = (column * (this.screenwidth / 10)) + 15;
             }
-            posY = (row * 24) +15;
-            Ball = new EllipseGeometry(new Point(posX, posY), screenwidth / 20, screenwidth / 20);
-            ColorNumber = rand.Next(0, 5);
+
+            this.posY = (row * 25) + 15;
+            this.Location = new Point(this.posX, this.posY);
+            this.Item = new EllipseGeometry(this.Location, this.screenwidth / 20, this.screenwidth / 20);
+            this.ColorNumber = rand.Next(0, 5);
+        }
+
+        public Bubble(int screenHeight, int screeWidth)
+        {
+            this.screenheight = screenHeight - 15;
+            this.screenwidth = screeWidth - 15;
+            this.posX = this.screenwidth / 2;
+            this.posY = this.screenheight;
+            this.Location = new Point(this.posX, this.posY);
+            this.Item = new EllipseGeometry(this.Location, this.screenwidth / 20, this.screenwidth / 20);
+            this.ColorNumber = rand.Next(0, 5);
         }
 
         public Point Location { get; set; }
 
         public int ColorNumber { get; private set; }
-
-        public Geometry Ball { get; set; }
-
-        public Geometry GetTransformedGeometry()
-        {
-            Geometry copy = Ball.Clone();
-            copy.Transform = new TranslateTransform(Location.X, Location.Y);
-
-            return copy.GetFlattenedPathGeometry();
-        }
     }
 }
