@@ -1,4 +1,8 @@
-﻿namespace Oenik_prog3_2017osz_iapw0k
+﻿// <copyright file="Player.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace Oenik_prog3_2017osz_iapw0k
 {
     using System;
     using System.Collections.Generic;
@@ -10,25 +14,37 @@
 
     public class Player : GameItem
     {
-        private double lbound = 15;
-        private double ubound = 165;
+        private double lbound = 10;
+        private double ubound = 170;
+        
 
-        public Player(int posX, int posY)
+        public Player(int posX, int posY, double size)
         {
-            this.PosX = posX -7;
-            this.PosY = posY;
-            this.Item = new LineGeometry(new Point(this.PosX, this.PosY), new Point(this.PosX, this.PosY -40));
+            this.PosX = posX / 2;
+            this.PosY = posY - 15;
+            this.Item = new LineGeometry(new Point(this.PosX, this.PosY), new Point(this.PosX, this.PosY - 40));
+            this.Bullet = new Bubble(posY, posX, size);
+            this.NextBullets = new List<Bubble>();
+            this.NextBullets.Add(new Bubble(posX, posY, size, 16 , 0));
+            this.NextBullets.Add(new Bubble(posX, posY, size, 16, 1));
+            this.ShootingAngle = 0;
         }
 
-        public int PosX { get; set; }
+        public double PosX { get; set; }
 
-        public int PosY { get; set; }
+        public double PosY { get; set; }
+
+        public Bubble Bullet { get; set; }
+
+        public List<Bubble> NextBullets { get; set; }
 
         public double Angle { get; private set; }
 
+        public double ShootingAngle { get; set; }
+
         public void CalcAngle(double pX, double pY)
         {
-            if (pX == this.PosX -7)
+            if (pX == this.PosX)
             {
                 this.Angle = 90;
             }
@@ -37,7 +53,7 @@
                 double a = (this.PosX - pX);
                 double b = this.PosY - pY;
 
-                this.Angle = System.Math.Atan2(a, b) * (180/System.Math.PI);
+                this.Angle = System.Math.Atan2(b, a) * (180/System.Math.PI);
                 if (this.Angle < 0)
                 {
                     this.Angle = 180 + this.Angle;
@@ -63,28 +79,44 @@
 
         public void Rotate()
         {
-            double diffX = 40 * Math.Sin(this.Angle * (Math.PI / 180));
-            if (this.Angle < 90)
-            {
-                diffX = this.PosX - diffX;
-            }
-            else
-            {
-                diffX = this.PosX + diffX;
-            }
+            double diffX = 40 * Math.Cos(this.Angle * (Math.PI / 180));
 
-            double diffY = 40 * Math.Cos(this.Angle * (Math.PI / 180));
+                diffX = this.PosX - diffX;
+
+            double diffY = 40 * Math.Sin(this.Angle * (Math.PI / 180));
             diffY = this.PosY - Math.Abs(diffY);
 
             this.Item = new LineGeometry(new Point(this.PosX, this.PosY), new Point(diffX, diffY));
+        }
 
-            if (this.Angle == 90)
+        public void Move(double angle)
+        {
+            double dx = -this.CalculatePos().X;
+            double dy = this.CalculatePos().Y;
+
+            Transform transform = new TranslateTransform(dx, dy);
+
+            this.Bullet.TransformGeometry(transform);
+
+            Rect bounds = this.Bullet.Item.Bounds;
+
+            if (bounds.Left < 0)
             {
-                new LineGeometry(new Point(this.PosX, this.PosY), new Point(this.PosX, this.PosY - 40));
+                this.ShootingAngle = 180 - this.ShootingAngle;
+            }
+            else if (bounds.Right > (this.PosX * 2))
+            {
+                this.ShootingAngle = 180 - this.ShootingAngle;
             }
 
         }
 
+        public Point CalculatePos()
+        {
+            double dx = this.Bullet.Velocity * Math.Cos(this.ShootingAngle * (Math.PI / 180));
+            double dy = -1 * (this.Bullet.Velocity * Math.Sin(this.ShootingAngle * (Math.PI / 180)));
 
+            return new Point(dx, dy);
+        }
     }
 }

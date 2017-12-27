@@ -1,4 +1,8 @@
-﻿namespace Oenik_prog3_2017osz_iapw0k
+﻿// <copyright file="Game.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace Oenik_prog3_2017osz_iapw0k
 {
     using System.Collections.Generic;
     using System.Windows;
@@ -20,14 +24,19 @@
 
         public Player ThePlayer { get; set; }
 
+        public GameGrid Grid { get; set; }
+
         public Bubble Bullet { get; set; }
 
         public List<Bubble[]> Bubbles { get; set; }
 
         private void ToStartingState()
         {
-            this.Bullet = new Bubble(this.screenHeight, this.screenWidth);
-            this.ThePlayer = new Player(this.screenWidth / 2, this.screenHeight - 25);
+            this.Grid = new GameGrid();
+
+            this.ThePlayer = new Player(this.screenWidth, this.screenHeight, this.Grid.BubbleSize);
+
+
 
             this.Bubbles = new List<Bubble[]>();
             for (int i = 0; i < 5; i++)
@@ -35,7 +44,7 @@
                 Bubble[] bubbleRow = new Bubble[10];
                 for (int j = 0; j < 10; j++)
                 {
-                    bubbleRow[j] = new Bubble(this.screenHeight, this.screenWidth, i, j);
+                    bubbleRow[j] = new Bubble(this.screenHeight, this.screenWidth, this.Grid.BubbleSize, i, j);
                 }
 
                 this.Bubbles.Add(bubbleRow);
@@ -45,9 +54,10 @@
             this.dy = 0;
         }
 
-        private void Shoot()
+        public void Shoot()
         {
                 
         }
+
     }
 }

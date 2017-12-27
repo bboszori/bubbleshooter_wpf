@@ -67,6 +67,7 @@
     <Compile Include="Game.cs" />
     <Compile Include="GameItem.cs" />
     <Compile Include="GameFrameworkElement.cs" />
+    <Compile Include="GameGrid.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
