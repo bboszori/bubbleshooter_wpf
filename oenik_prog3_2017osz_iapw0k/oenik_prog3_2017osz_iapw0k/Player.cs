@@ -25,8 +25,8 @@ namespace Oenik_prog3_2017osz_iapw0k
             this.Item = new LineGeometry(new Point(this.PosX, this.PosY), new Point(this.PosX, this.PosY - 40));
             this.Bullet = new Bubble(posY, posX, size);
             this.NextBullets = new List<Bubble>();
-            this.NextBullets.Add(new Bubble(posX, posY, size, 16 , 0));
-            this.NextBullets.Add(new Bubble(posX, posY, size, 16, 1));
+            this.NextBullets.Add(new Bubble(new Point(20, 420), size));
+            this.NextBullets.Add(new Bubble(new Point(50, 420), size));
             this.ShootingAngle = 0;
         }
 
@@ -89,7 +89,7 @@ namespace Oenik_prog3_2017osz_iapw0k
             this.Item = new LineGeometry(new Point(this.PosX, this.PosY), new Point(diffX, diffY));
         }
 
-        public void Move(double angle)
+        public bool Move()
         {
             double dx = -this.CalculatePos().X;
             double dy = this.CalculatePos().Y;
@@ -109,12 +109,21 @@ namespace Oenik_prog3_2017osz_iapw0k
                 this.ShootingAngle = 180 - this.ShootingAngle;
             }
 
+            if (bounds.Top < 0)
+            {
+                return false;
+            }
+
+            return true;
+
         }
 
         public Point CalculatePos()
         {
             double dx = this.Bullet.Velocity * Math.Cos(this.ShootingAngle * (Math.PI / 180));
             double dy = -1 * (this.Bullet.Velocity * Math.Sin(this.ShootingAngle * (Math.PI / 180)));
+
+            this.Bullet.Location = new Point(this.Bullet.Location.X - dx, this.Bullet.Location.Y + dy);
 
             return new Point(dx, dy);
         }

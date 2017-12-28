@@ -16,23 +16,12 @@ namespace Oenik_prog3_2017osz_iapw0k
         private double posX;
         private double posY;
 
-        public Bubble(int screenHeight, int screeWidth, double bubbleSize, int row, int column)
+        public Bubble(Point location, double bubbleSize)
         {
-            this.screenheight = screenHeight;
-            this.screenwidth = screeWidth -15;
-            if (row % 2 == 0)
-            {
-                this.posX = (column * (this.screenwidth / 10)) + 30;
-            }
-            else
-            {
-                this.posX = (column * (this.screenwidth / 10)) + 15;
-            }
-
-            this.posY = (row * 25) + 15;
-            this.Location = new Point(this.posX, this.posY);
+            this.Location = location;
             this.Item = new EllipseGeometry(this.Location, bubbleSize / 2, bubbleSize / 2);
             this.ColorNumber = rand.Next(0, 5);
+            this.Processed = false;
         }
 
         public Bubble(int screenHeight, int screeWidth, double bubbleSize)
@@ -44,13 +33,18 @@ namespace Oenik_prog3_2017osz_iapw0k
             this.Location = new Point(this.posX, this.posY);
             this.Item = new EllipseGeometry(this.Location, bubbleSize / 2, bubbleSize / 2);
             this.ColorNumber = rand.Next(0, 5);
+            this.Processed = false;
         }
 
         public Point Location { get; set; }
 
         public int Velocity { get; set; }
 
-        public int ColorNumber { get; private set; }
+        public int ColorNumber { get; set; }
+
+        public bool Processed { get; set; }
+
+        
 
         
     }

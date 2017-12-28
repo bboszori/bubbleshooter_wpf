@@ -35,20 +35,28 @@ namespace Oenik_prog3_2017osz_iapw0k
 
             if (this.game != null)
             {
-                drawingContext.DrawGeometry(Brushes.Black, new Pen(Brushes.Black, 1), this.game.ThePlayer.Item);
+                
 
                 foreach (Bubble[] arritem in this.game.Bubbles)
                 {
                     foreach (Bubble item in arritem)
                     {
+                        if (item != default(Bubble))
+                        {
+                            this.DrawOutBubble(drawingContext, item);
+                        }
+                    }
+                }
+
+                foreach (Bubble item in this.game.ThePlayer.NextBullets)
+                {
+                    if (item != default(Bubble))
+                    {
                         this.DrawOutBubble(drawingContext, item);
                     }
                 }
 
-                foreach (Bubble item in game.ThePlayer.NextBullets)
-                {
-                    this.DrawOutBubble(drawingContext, item);
-                }
+                drawingContext.DrawGeometry(Brushes.Black, new Pen(Brushes.Black, 1), this.game.ThePlayer.Item);
 
                 this.DrawOutBubble(drawingContext, this.game.ThePlayer.Bullet);
 
@@ -83,7 +91,12 @@ namespace Oenik_prog3_2017osz_iapw0k
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            this.game.ThePlayer.Move(this.game.ThePlayer.Angle);
+            if (this.game.ThePlayer.Bullet.Velocity > 0)
+            {
+                this.game.DoTurn();
+            }
+
+            
             this.InvalidateVisual();
         }
 
@@ -112,6 +125,9 @@ namespace Oenik_prog3_2017osz_iapw0k
         {
             switch (bubble.ColorNumber)
             {
+                case -1:
+                    drawingContext.DrawGeometry(Brushes.Silver, null, bubble.Item);
+                    break;
                 case 0:
                     drawingContext.DrawGeometry(Brushes.SteelBlue, new Pen(Brushes.SlateBlue, 1), bubble.Item);
                     break;

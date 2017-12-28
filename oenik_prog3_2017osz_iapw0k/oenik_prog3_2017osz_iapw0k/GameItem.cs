@@ -13,7 +13,7 @@ namespace Oenik_prog3_2017osz_iapw0k
 
     public class GameItem
     {
-        public Geometry Item { get; protected set; }
+        public Geometry Item { get; set; }
 
         public bool CollidesWith(GameItem gItem)
         {

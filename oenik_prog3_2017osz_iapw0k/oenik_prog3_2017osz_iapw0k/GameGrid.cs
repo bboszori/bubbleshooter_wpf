@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Oenik_prog3_2017osz_iapw0k
 {
@@ -15,11 +16,11 @@ namespace Oenik_prog3_2017osz_iapw0k
         private double bubbleSize = 28.5;
         private double rowheight = 25;
         private double screenWidth = 300;
-        private double screenHeight = 450;
+        private double screenHeight = 400;
 
         public GameGrid()
         {
-            this.LastRow = 5;
+            this.LastRow = 4;
             this.bubbleSize = 28.5;
         }
 
@@ -31,24 +32,60 @@ namespace Oenik_prog3_2017osz_iapw0k
 
         public double LastRow { get; set; }
 
-        public int[] GetIndex(double posX, double posY)
+        public int GetRowIndex(double y)
         {
-            int[] index = new int[2];
-            int offset = 0;
-
-            index[0] = (int)Math.Floor(posY / this.rowheight);
-
-            if (index[0] % 2 != 0)
+            if (y < 0)
             {
-                offset = 15;
+                y = 0;
             }
 
-            index[1] = (int)Math.Floor((posY - offset) / this.BubbleSize);
-
-            return index;
+            return (int)Math.Round(y / this.rowheight);
         }
 
+        public int GetColumnIndex(double x, int row)
+        {
+            if (x < 0)
+            {
+                x = 0;
+            }
 
+            int offset = 15;
+
+            if (row % 2 != 0)
+            {
+                offset = 30;
+            }
+
+            if (x < offset)
+            {
+                return 0;
+            }
+            else
+            {
+                return (int)Math.Ceiling((x - offset) / this.BubbleSize);
+            }
+
+            
+        }
+
+        public Point GetLocation(int row, int column)
+        {
+            double posX = 0;
+            double posY = 0;
+
+            if (row % 2 == 0)
+            {
+                posX = (column * ((this.screenWidth - 15) / 10)) + 15;
+            }
+            else
+            {
+                posX = (column * ((this.screenWidth - 15) / 10)) + 30;
+            }
+
+            posY = (row * this.rowheight) + 15;
+
+            return new Point(posX, posY);
+        }
 
     }
 
