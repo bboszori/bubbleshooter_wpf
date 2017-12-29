@@ -5,15 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Oenik_prog3_2017osz_iapw0k"
         mc:Ignorable="d"
-        Title="MainWindow" Height="550" Width="315">
+        Title="MainWindow" Height="600" Width="315" WindowStartupLocation="CenterScreen" WindowStyle="ToolWindow" ResizeMode="CanMinimize">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="100"/>
             <RowDefinition Height="400"/>
-            <RowDefinition Height="15"/>
+            <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
 
-        <local:GameFrameworkElement Grid.Row="1" />
+        <local:GameFrameworkElement Grid.Row="1" KeyDown="GameFrameworkElement_KeyDown" />
+        <Border Grid.Row="0" Background="DarkSlateGray"/>
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="96" Margin="10,0,0,0" TextWrapping="Wrap" Text="Bubble Shooter" VerticalAlignment="Top" Width="289" Foreground="White" Background="DarkSlateGray" BorderThickness="0" HorizontalContentAlignment="Center" FontSize="38" FontWeight="ExtraBold"/>
 
     </Grid>
 </Window>

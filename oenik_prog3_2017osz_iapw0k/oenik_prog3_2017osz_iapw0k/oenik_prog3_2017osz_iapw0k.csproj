@@ -55,7 +55,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Scores.cs" />
+    <Compile Include="Bindable.cs" />
+    <Compile Include="BL\Levels.cs" />
+    <Compile Include="BL\Scores.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -64,18 +66,18 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Bubble.cs" />
-    <Compile Include="Game.cs" />
-    <Compile Include="GameItem.cs" />
+    <Compile Include="BL\Bubble.cs" />
+    <Compile Include="BL\Game.cs" />
+    <Compile Include="BL\GameItem.cs" />
     <Compile Include="GameFrameworkElement.cs" />
-    <Compile Include="GameGrid.cs" />
+    <Compile Include="Model\GameGrid.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Player.cs" />
+    <Compile Include="BL\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

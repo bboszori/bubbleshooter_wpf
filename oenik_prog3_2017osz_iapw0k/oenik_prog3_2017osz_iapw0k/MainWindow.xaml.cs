@@ -16,6 +16,12 @@ namespace Oenik_prog3_2017osz_iapw0k
             this.InitializeComponent();
         }
 
-        
+        private void GameFrameworkElement_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Escape)
+            {
+                this.Close();
+            }
+        }
     }
 }

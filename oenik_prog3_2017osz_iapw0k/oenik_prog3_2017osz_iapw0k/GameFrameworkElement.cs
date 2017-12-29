@@ -6,16 +6,16 @@ namespace Oenik_prog3_2017osz_iapw0k
 {
     using System;
     using System.ComponentModel;
+    using System.Globalization;
     using System.Windows;
     using System.Windows.Media;
     using System.Windows.Threading;
+
 
     internal class GameFrameworkElement : FrameworkElement
     {
         private Game game;
         private DispatcherTimer timer;
-        private int width;
-        private int height;
 
         public GameFrameworkElement()
         {
@@ -30,12 +30,13 @@ namespace Oenik_prog3_2017osz_iapw0k
             base.OnRender(drawingContext);
 
             drawingContext.DrawRectangle(Brushes.Silver, null, new Rect(0, 0, this.ActualWidth, this.ActualHeight));
+            drawingContext.DrawRectangle(Brushes.DarkSlateGray, null, new Rect(0, 400, this.ActualWidth, 100));
 
 
 
             if (this.game != null)
             {
-                
+
 
                 foreach (Bubble[] arritem in this.game.Bubbles)
                 {
@@ -60,15 +61,38 @@ namespace Oenik_prog3_2017osz_iapw0k
 
                 this.DrawOutBubble(drawingContext, this.game.ThePlayer.Bullet);
 
+                if (this.game.CheckIfLoose())
+                {
+                    this.DrawGameOver(drawingContext);
+                }
+                if (this.game.CheckIfWin())
+                {
+                    this.DrawNextLevel(drawingContext);
+                }
 
-
-                //drawingContext.DrawGeometry(Brushes.Silver, null, this.game.Bullet.Ball);
+                this.DrawLevel(drawingContext);
+                this.DrawScores(drawingContext);
             }
         }
 
         private void GameFrameworkElement_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            throw new NotImplementedException();
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                if (this.game.CheckIfLoose())
+                {
+                    this.timer.Start();
+                    this.game.Level.ResetLevel();
+                    this.game.Scores.ResetScore();
+                    this.game.ToStartingState();
+                }
+                else if (this.game.CheckIfWin())
+                {
+                    this.timer.Start();
+                    this.game.Level.LevelUp();
+                    this.game.ToStartingState();
+                }
+            }
         }
 
 
@@ -91,12 +115,19 @@ namespace Oenik_prog3_2017osz_iapw0k
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if (this.game.ThePlayer.Bullet.Velocity > 0)
+            if (this.game.CheckIfLoose())
+            {
+                this.timer.Stop();
+            }
+            else if (this.game.CheckIfWin())
+            {
+                this.timer.Stop();
+
+            }
+            else
             {
                 this.game.DoTurn();
             }
-
-            
             this.InvalidateVisual();
         }
 
@@ -116,7 +147,7 @@ namespace Oenik_prog3_2017osz_iapw0k
         {
             if (this.game.ThePlayer.Bullet.Velocity == 0)
             {
-                this.game.ThePlayer.Bullet.Velocity = 5;
+                this.game.ThePlayer.Bullet.Velocity = 10;
                 this.game.ThePlayer.ShootingAngle = this.game.ThePlayer.Angle;
             }
         }
@@ -143,10 +174,99 @@ namespace Oenik_prog3_2017osz_iapw0k
                 case 4:
                     drawingContext.DrawGeometry(Brushes.Gray, new Pen(Brushes.DarkGray, 1), bubble.Item);
                     break;
+                case 5:
+                    drawingContext.DrawGeometry(Brushes.Brown, new Pen(Brushes.DarkRed, 1), bubble.Item);
+                    break;
+                case 6:
+                    drawingContext.DrawGeometry(Brushes.ForestGreen, new Pen(Brushes.DarkGreen, 1), bubble.Item);
+                    break;
+
                 default:
                     break;
             }
         }
 
+        private void DrawGameOver(DrawingContext drawingContext)
+        {
+            FormattedText text1 = new FormattedText(
+                "Game over",
+                CultureInfo.CurrentUICulture,
+                FlowDirection.LeftToRight,
+                new Typeface(new FontFamily("Calibry"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal),
+                32,
+                Brushes.White);
+
+            FormattedText text2 = new FormattedText(
+                "\nPlease press ENTER to restart game \nPlease press ESC to exit game",
+                CultureInfo.CurrentUICulture,
+                FlowDirection.LeftToRight,
+                new Typeface("Calibri"),
+                18,
+                Brushes.White);
+
+            drawingContext.DrawRectangle(Brushes.Black, null, new Rect(0, 0, this.ActualWidth, this.ActualHeight));
+            drawingContext.DrawText(text1, new Point(this.ActualWidth / 2 - text1.Width / 2, this.ActualHeight / 2 - (2* text1.Height)));
+            drawingContext.DrawText(text2, new Point(this.ActualWidth / 2 - text2.Width / 2, this.ActualHeight / 2 + text1.Height));
+
+        }
+
+        private void DrawNextLevel(DrawingContext drawingContext)
+        {
+            FormattedText text1 = new FormattedText(
+                "Level " + this.game.Level.Level.ToString() + " completed" ,
+                CultureInfo.CurrentUICulture,
+                FlowDirection.LeftToRight,
+                new Typeface(new FontFamily("Calibry"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal),
+                26,
+                Brushes.White);
+
+            FormattedText text2 = new FormattedText(
+                "\nPlease press ENTER to continue game \nPlease press ESC to exit game",
+                CultureInfo.CurrentUICulture,
+                FlowDirection.LeftToRight,
+                new Typeface("Calibri"),
+                18,
+                Brushes.White);
+
+            drawingContext.DrawRectangle(Brushes.Black, null, new Rect(0, 0, this.ActualWidth, this.ActualHeight));
+            drawingContext.DrawText(text1, new Point(this.ActualWidth / 2 - text1.Width / 2, this.ActualHeight / 2 - (2* text1.Height)));
+            drawingContext.DrawText(text2, new Point(this.ActualWidth / 2 - text2.Width / 2, this.ActualHeight / 2 + text1.Height));
+
+        }
+
+
+        private void DrawLevel(DrawingContext drawingContext)
+        {
+            FormattedText text = new FormattedText(
+                "Level " + this.game.Level.Level.ToString(),
+                CultureInfo.CurrentUICulture,
+                FlowDirection.LeftToRight,
+                new Typeface(new FontFamily("Calibry"), FontStyles.Normal, FontWeights.SemiBold, FontStretches.Normal),
+                16,
+                Brushes.White);
+
+            if (this.game.Level.Level > 0)
+            {
+                drawingContext.DrawText(text, new Point(10, 440));
+            }
+            
+        }
+
+        private void DrawScores(DrawingContext drawingContext)
+        {
+            FormattedText text = new FormattedText(
+                "Your score: " + this.game.Scores.Score.ToString(),
+                CultureInfo.CurrentUICulture,
+                FlowDirection.LeftToRight,
+                new Typeface(new FontFamily("Calibry"), FontStyles.Normal, FontWeights.SemiBold, FontStretches.Normal),
+                16,
+                Brushes.White);
+
+            if (this.game.Level.Level > 0)
+            {
+                drawingContext.DrawText(text, new Point(this.ActualWidth - text.Width - 10, 440));
+            }
+
+        }
     }
 }
