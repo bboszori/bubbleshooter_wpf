@@ -6,33 +6,50 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    class Levels
+    internal class Levels
     {
         public Levels()
         {
             this.Level = 1;
             this.GetNrofColors();
+            this.NrofRounds = 5;
         }
 
         public int Level { get; set; }
 
         public int NrofColors { get; private set; }
 
-        public void GetNrofColors()
+        public int NrofRounds { get; private set; }
+
+        public void LevelUp()
         {
-            if (this.Level < 3)
+            this.Level++;
+            this.GetNrofColors();
+            this.GetNrofRounds();
+        }
+
+        public void ResetLevel()
+        {
+            this.Level = 1;
+            this.GetNrofColors();
+            this.NrofRounds = 5;
+        }
+
+        private void GetNrofColors()
+        {
+            if (this.Level < 5)
             {
                 this.NrofColors = 3;
             }
-            else if (this.Level < 5)
+            else if (this.Level < 9)
             {
                 this.NrofColors = 4;
             }
-            else if (this.Level < 7)
+            else if (this.Level < 13)
             {
                 this.NrofColors = 5;
             }
-            else if (this.Level < 9)
+            else if (this.Level < 17)
             {
                 this.NrofColors = 6;
             }
@@ -42,16 +59,19 @@
             }
         }
 
-        public void LevelUp()
+        private void GetNrofRounds()
         {
-            this.Level++;
-            this.GetNrofColors();
+            if (this.Level < 17 && this.NrofColors > 2)
+            {
+                if (this.Level % 5 == 0)
+                {
+                    this.NrofRounds = 5;
+                }
+                else
+                {
+                    this.NrofRounds--;
+                }
+            }
         }
-
-        public void ResetLevel()
-        {
-            this.Level = 1;
-            this.GetNrofColors();
-        }
-    }
+   }
 }

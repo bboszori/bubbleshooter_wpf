@@ -9,14 +9,13 @@ namespace Oenik_prog3_2017osz_iapw0k
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using System.Windows.Media;
     using System.Windows;
+    using System.Windows.Media;
 
-    class Player : GameItem
+    internal class Player : GameItem
     {
         private double lbound = 10;
         private double ubound = 170;
-        
 
         public Player(int posX, int posY, double size, int nrOfColors)
         {
@@ -116,7 +115,7 @@ namespace Oenik_prog3_2017osz_iapw0k
             return true;
         }
 
-        public Point CalculatePos()
+        private Point CalculatePos()
         {
             double dx = this.Bullet.Velocity * Math.Cos(this.ShootingAngle * (Math.PI / 180));
             double dy = -1 * (this.Bullet.Velocity * Math.Sin(this.ShootingAngle * (Math.PI / 180)));

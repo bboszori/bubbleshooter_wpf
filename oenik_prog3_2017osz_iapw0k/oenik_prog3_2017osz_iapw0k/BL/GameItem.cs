@@ -11,7 +11,7 @@ namespace Oenik_prog3_2017osz_iapw0k
     using System.Threading.Tasks;
     using System.Windows.Media;
 
-    class GameItem
+    internal class GameItem
     {
         public Geometry Item { get; set; }
 

@@ -11,7 +11,7 @@ namespace Oenik_prog3_2017osz_iapw0k
     using System.Threading.Tasks;
     using System.Windows;
 
-    class GameGrid
+    internal class GameGrid
     {
         private double bubbleSize = 28.5;
         private double rowheight = 25;
@@ -95,7 +95,6 @@ namespace Oenik_prog3_2017osz_iapw0k
             {
                 posX = (column * ((this.screenWidth - 15) / 10)) + 30;
             }
-
 
             posY = (row * this.rowheight) + 15;
 

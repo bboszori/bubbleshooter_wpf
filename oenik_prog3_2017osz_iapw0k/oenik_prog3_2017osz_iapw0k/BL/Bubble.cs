@@ -8,7 +8,7 @@ namespace Oenik_prog3_2017osz_iapw0k
     using System.Windows;
     using System.Windows.Media;
 
-    class Bubble : GameItem
+    internal class Bubble : GameItem
     {
         private static Random rand = new Random();
         private int screenheight;

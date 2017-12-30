@@ -6,7 +6,7 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    class Scores
+    internal class Scores
     {
         private static int point = 10;
 

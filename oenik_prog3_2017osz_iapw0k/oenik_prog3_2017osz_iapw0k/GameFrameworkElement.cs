@@ -7,15 +7,17 @@ namespace Oenik_prog3_2017osz_iapw0k
     using System;
     using System.ComponentModel;
     using System.Globalization;
+    using System.IO;
     using System.Windows;
     using System.Windows.Media;
+    using System.Windows.Media.Imaging;
     using System.Windows.Threading;
-
 
     internal class GameFrameworkElement : FrameworkElement
     {
         private Game game;
         private DispatcherTimer timer;
+        private ImageBrush bg;
 
         public GameFrameworkElement()
         {
@@ -23,6 +25,11 @@ namespace Oenik_prog3_2017osz_iapw0k
             this.KeyDown += this.GameFrameworkElement_KeyDown;
             this.MouseMove += this.GameFrameworkElement_MouseMove;
             this.MouseLeftButtonUp += this.GameFrameworkElement_MouseLeftButtonUp;
+
+            if (File.Exists("bg.jpg"))
+            {
+                this.bg = new ImageBrush(new BitmapImage(new Uri("bg.jpg", UriKind.Relative)));
+            }
         }
 
         protected override void OnRender(DrawingContext drawingContext)
@@ -30,14 +37,16 @@ namespace Oenik_prog3_2017osz_iapw0k
             base.OnRender(drawingContext);
 
             drawingContext.DrawRectangle(Brushes.Silver, null, new Rect(0, 0, this.ActualWidth, this.ActualHeight));
+
+            if (File.Exists("bg.jpg"))
+            {
+                drawingContext.DrawRectangle(this.bg, null, new Rect(0, 0, this.ActualWidth, this.ActualHeight));
+            }
+
             drawingContext.DrawRectangle(Brushes.DarkSlateGray, null, new Rect(0, 400, this.ActualWidth, 100));
-
-
 
             if (this.game != null)
             {
-
-
                 foreach (Bubble[] arritem in this.game.Bubbles)
                 {
                     foreach (Bubble item in arritem)
@@ -93,8 +102,12 @@ namespace Oenik_prog3_2017osz_iapw0k
                     this.game.ToStartingState();
                 }
             }
-        }
 
+            if (e.Key == System.Windows.Input.Key.Space)
+            {
+                this.game.SwitchBullets();
+            }
+        }
 
         private void GameFrameworkElement_Loaded(object sender, RoutedEventArgs e)
         {
@@ -122,12 +135,12 @@ namespace Oenik_prog3_2017osz_iapw0k
             else if (this.game.CheckIfWin())
             {
                 this.timer.Stop();
-
             }
             else
             {
                 this.game.DoTurn();
             }
+
             this.InvalidateVisual();
         }
 
@@ -157,7 +170,7 @@ namespace Oenik_prog3_2017osz_iapw0k
             switch (bubble.ColorNumber)
             {
                 case -1:
-                    drawingContext.DrawGeometry(Brushes.Silver, null, bubble.Item);
+                    drawingContext.DrawGeometry(Brushes.Transparent, null, bubble.Item);
                     break;
                 case 0:
                     drawingContext.DrawGeometry(Brushes.SteelBlue, new Pen(Brushes.SlateBlue, 1), bubble.Item);
@@ -205,15 +218,15 @@ namespace Oenik_prog3_2017osz_iapw0k
                 Brushes.White);
 
             drawingContext.DrawRectangle(Brushes.Black, null, new Rect(0, 0, this.ActualWidth, this.ActualHeight));
-            drawingContext.DrawText(text1, new Point(this.ActualWidth / 2 - text1.Width / 2, this.ActualHeight / 2 - (2* text1.Height)));
-            drawingContext.DrawText(text2, new Point(this.ActualWidth / 2 - text2.Width / 2, this.ActualHeight / 2 + text1.Height));
+            drawingContext.DrawText(text1, new Point((this.ActualWidth / 2) - (text1.Width / 2), (this.ActualHeight / 2) - (2 * text1.Height)));
+            drawingContext.DrawText(text2, new Point((this.ActualWidth / 2) - (text2.Width / 2), (this.ActualHeight / 2) + text1.Height));
 
         }
 
         private void DrawNextLevel(DrawingContext drawingContext)
         {
             FormattedText text1 = new FormattedText(
-                "Level " + this.game.Level.Level.ToString() + " completed" ,
+                "Level " + this.game.Level.Level.ToString() + " completed",
                 CultureInfo.CurrentUICulture,
                 FlowDirection.LeftToRight,
                 new Typeface(new FontFamily("Calibry"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal),
@@ -229,11 +242,10 @@ namespace Oenik_prog3_2017osz_iapw0k
                 Brushes.White);
 
             drawingContext.DrawRectangle(Brushes.Black, null, new Rect(0, 0, this.ActualWidth, this.ActualHeight));
-            drawingContext.DrawText(text1, new Point(this.ActualWidth / 2 - text1.Width / 2, this.ActualHeight / 2 - (2* text1.Height)));
-            drawingContext.DrawText(text2, new Point(this.ActualWidth / 2 - text2.Width / 2, this.ActualHeight / 2 + text1.Height));
+            drawingContext.DrawText(text1, new Point((this.ActualWidth / 2) - (text1.Width / 2), (this.ActualHeight / 2) - (2* text1.Height)));
+            drawingContext.DrawText(text2, new Point((this.ActualWidth / 2) - (text2.Width / 2), (this.ActualHeight / 2) + text1.Height));
 
         }
-
 
         private void DrawLevel(DrawingContext drawingContext)
         {
@@ -249,7 +261,6 @@ namespace Oenik_prog3_2017osz_iapw0k
             {
                 drawingContext.DrawText(text, new Point(10, 440));
             }
-            
         }
 
         private void DrawScores(DrawingContext drawingContext)
@@ -266,7 +277,6 @@ namespace Oenik_prog3_2017osz_iapw0k
             {
                 drawingContext.DrawText(text, new Point(this.ActualWidth - text.Width - 10, 440));
             }
-
         }
     }
 }

@@ -9,15 +9,11 @@ namespace Oenik_prog3_2017osz_iapw0k
     using System.Windows;
     using System.Windows.Media;
 
-    class Game : Bindable
+    internal class Game
     {
+        private static Random rand = new Random();
         private int screenWidth;
         private int screenHeight;
-        private static Random rand = new Random();
-
-        private int dx;
-        private int dy;
-
         private int rounds;
 
         public Game(int screenWidth, int screenHeight)
@@ -30,8 +26,8 @@ namespace Oenik_prog3_2017osz_iapw0k
         }
 
         public Player ThePlayer { get; set; }
-        public Levels Level { get; set; }
 
+        public Levels Level { get; set; }
 
         public GameGrid Grid { get; set; }
 
@@ -45,9 +41,6 @@ namespace Oenik_prog3_2017osz_iapw0k
             this.rounds = 0;
 
             this.ThePlayer = new Player(this.screenWidth, this.screenHeight, this.Grid.BubbleSize, this.Level.NrofColors);
-
-            
-
             this.Bubbles = new List<Bubble[]>();
             for (int i = 0; i < 15; i++)
             {
@@ -67,14 +60,6 @@ namespace Oenik_prog3_2017osz_iapw0k
                     this.Bubbles[i][j].ColorNumber = -1;
                 }
             }
-
-
-            this.dx = 5;
-            this.dy = 0;
-        }
-
-        public void Shoot()
-        {
         }
 
         public void DoTurn()
@@ -100,7 +85,7 @@ namespace Oenik_prog3_2017osz_iapw0k
                 else
                 {
                     this.rounds++;
-                    if (this.rounds % 5 == 0)
+                    if (this.rounds % this.Level.NrofRounds == 0)
                     {
                         this.AddNewLine();
                         this.ColorsLeft();
@@ -130,7 +115,7 @@ namespace Oenik_prog3_2017osz_iapw0k
                     else
                     {
                         this.rounds++;
-                        if (this.rounds % 5 == 0)
+                        if (this.rounds % this.Level.NrofRounds == 0)
                         {
                             this.AddNewLine();
                             this.ColorsLeft();
@@ -140,231 +125,12 @@ namespace Oenik_prog3_2017osz_iapw0k
             }
         }
 
-        public Point PinBubble()
-        {
-            Rect bounds = this.ThePlayer.Bullet.Item.Bounds;
-
-            int row = this.Grid.GetRowIndex(bounds.Y);
-            int column = this.Grid.GetColumnIndex(bounds.X, row);
-            Point loc = this.Grid.GetLocation(row, column);
-
-            if (this.Bubbles[row][column].ColorNumber == -1)
-            {
-                this.Bubbles[row][column].ColorNumber = this.ThePlayer.Bullet.ColorNumber;
-            }
-
-            this.Bubbles[row][column].Velocity = 0;
-            this.ThePlayer.Bullet = null;
-
-
-            this.ThePlayer.Bullet = this.ThePlayer.NextBullets[1];
-            this.ThePlayer.NextBullets.RemoveAt(1);
-            this.ThePlayer.NextBullets.Add(this.ThePlayer.NextBullets[0]);
-            this.ThePlayer.NextBullets.RemoveAt(0);
-            this.ThePlayer.NextBullets.Insert(0, new Bubble(new Point(20, 420), this.Grid.BubbleSize, this.Level.NrofColors));
-            TranslateTransform transform = new TranslateTransform(30, 0);
-            this.ThePlayer.NextBullets[1].TransformGeometry(transform);
-            this.ToStartingPoint();
-
-            return new Point(row, column);
-        }
-
         public void ToStartingPoint()
         {
             double posX = this.screenWidth / 2;
             double posY = this.screenHeight - (this.Grid.BubbleSize / 2);
             Point location = new Point(posX, posY);
             this.ThePlayer.Bullet.Item = new EllipseGeometry(location, this.Grid.BubbleSize / 2, this.Grid.BubbleSize / 2);
-        }
-
-        public bool IsItCollides()
-        {
-
-            for (int i = this.Bubbles.Count - 1; i >= 0; i--)
-            {
-                foreach (Bubble item in this.Bubbles[i])
-                {
-                    if (item.ColorNumber >= 0)
-                    {
-                        if (this.ThePlayer.Bullet.CollidesWith(item))
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        public List<Bubble> FindSameColors(int row, int column)
-        {
-            this.ResetProcessed();
-
-            List<Bubble> foundBubbles = new List<Bubble>();
-            Queue<Bubble> toprocess = new Queue<Bubble>();
-
-            this.Bubbles[row][column].Processed = true;
-            int color = this.Bubbles[row][column].ColorNumber;
-            toprocess.Enqueue(this.Bubbles[row][column]);
-
-            while (toprocess.Count > 0)
-            {
-                Bubble current = toprocess.Dequeue();
-
-                if (current.ColorNumber == color)
-                {
-                    foundBubbles.Add(current);
-
-                    List<Bubble> neighbours = this.GetNeighbours(current);
-
-                    foreach (Bubble item in neighbours)
-                    {
-                        if (item.Processed == false && item.ColorNumber >= 0)
-                        {
-                            item.Processed = true;
-                            toprocess.Enqueue(item);
-                        }
-                    }
-                }
-            }
-
-            return foundBubbles;
-        }
-
-        public void FindFloatings()
-        {
-            this.ResetProcessed();
-
-            foreach (Bubble[] arr in this.Bubbles)
-            {
-                foreach (Bubble item in arr)
-                {
-
-                    if (!item.Processed && item.ColorNumber >= 0)
-                    {
-                        item.Processed = true;
-                        Queue<Bubble> toprocess = new Queue<Bubble>();
-                        List<Bubble> cluster = new List<Bubble>();
-                        toprocess.Enqueue(item);
-
-                        while (toprocess.Count > 0)
-                        {
-                            Bubble current = toprocess.Dequeue();
-                            cluster.Add(current);
-                            List<Bubble> neighbours = this.GetNeighbours(current);
-                            foreach (Bubble n in neighbours)
-                            {
-                                if (!n.Processed && n.ColorNumber >= 0)
-                                {
-                                    n.Processed = true;
-                                    toprocess.Enqueue(n);
-                                }
-                            }
-                        }
-
-                        bool floating = true;
-                        foreach (Bubble b in cluster)
-                        {
-                            Rect bounds = b.Item.Bounds;
-                            int row = this.Grid.GetRowIndex(bounds.Y);
-
-                            if (row == 0)
-                            {
-                                floating = false;
-                            }
-                        }
-
-                        if (floating)
-                        {
-                            foreach (Bubble b in cluster)
-                            {
-                                b.ColorNumber = -1;
-                            }
-
-                            this.Scores.AddtoScore(cluster.Count);
-                        }
-                        }
-                    }
-                }
-            }
-
-
-        public List<Bubble> GetNeighbours(Bubble current)
-        {
-            List<Bubble> neighbours = new List<Bubble>();
-            Rect bounds = current.Item.Bounds;
-            int row = this.Grid.GetRowIndex(bounds.Y);
-            int column = this.Grid.GetColumnIndex(bounds.X, row);
-
-            if ((column - 1) >= 0)
-            {
-                neighbours.Add(this.Bubbles[row][column - 1]);
-            }
-
-            if ((column + 1) < 10)
-            {
-                neighbours.Add(this.Bubbles[row][column + 1]);
-            }
-
-            if (row % 2 == 0)
-            {
-                if ((row - 1) >= 0)
-                {
-                    if ((column - 1) >= 0)
-                    {
-                        neighbours.Add(this.Bubbles[row - 1][column - 1]);
-                    }
-
-                    neighbours.Add(this.Bubbles[row - 1][column]);
-                }
-
-                if ((row + 1) < 15)
-                {
-                    if ((column - 1) >= 0)
-                    {
-                        neighbours.Add(this.Bubbles[row + 1][column - 1]);
-                    }
-
-                    neighbours.Add(this.Bubbles[row + 1][column]);
-                }
-            }
-            else
-            {
-                if ((row - 1) >= 0)
-                {
-                    if ((column + 1) <10)
-                    {
-                        neighbours.Add(this.Bubbles[row - 1][column + 1]);
-                    }
-
-                    neighbours.Add(this.Bubbles[row - 1][column]);
-                }
-
-                if ((row + 1) < 15)
-                {
-                    if ((column + 1) <10)
-                    {
-                        neighbours.Add(this.Bubbles[row + 1][column + 1]);
-                    }
-
-                    neighbours.Add(this.Bubbles[row + 1][column]);
-                }
-            }
-
-            return neighbours;
-        }
-
-
-        public void ResetProcessed()
-        {
-            foreach (Bubble[] arr in this.Bubbles)
-            {
-                foreach (Bubble item in arr)
-                {
-                    item.Processed = false;
-                }
-            }
         }
 
         public bool CheckIfLoose()
@@ -426,6 +192,229 @@ namespace Oenik_prog3_2017osz_iapw0k
             this.FindFloatings();
         }
 
+        public void SwitchBullets()
+        {
+            int c;
+
+            c = this.ThePlayer.Bullet.ColorNumber;
+            this.ThePlayer.Bullet.ColorNumber = this.ThePlayer.NextBullets[1].ColorNumber;
+            this.ThePlayer.NextBullets[1].ColorNumber = c;
+        }
+
+        private Point PinBubble()
+        {
+            Rect bounds = this.ThePlayer.Bullet.Item.Bounds;
+
+            int row = this.Grid.GetRowIndex(bounds.Y);
+            int column = this.Grid.GetColumnIndex(bounds.X, row);
+            Point loc = this.Grid.GetLocation(row, column);
+
+            if (this.Bubbles[row][column].ColorNumber == -1)
+            {
+                this.Bubbles[row][column].ColorNumber = this.ThePlayer.Bullet.ColorNumber;
+            }
+
+            this.Bubbles[row][column].Velocity = 0;
+            this.ThePlayer.Bullet = null;
+
+            this.ThePlayer.Bullet = this.ThePlayer.NextBullets[1];
+            this.ThePlayer.NextBullets.RemoveAt(1);
+            this.ThePlayer.NextBullets.Add(this.ThePlayer.NextBullets[0]);
+            this.ThePlayer.NextBullets.RemoveAt(0);
+            this.ThePlayer.NextBullets.Insert(0, new Bubble(new Point(20, 420), this.Grid.BubbleSize, this.Level.NrofColors));
+            TranslateTransform transform = new TranslateTransform(30, 0);
+            this.ThePlayer.NextBullets[1].TransformGeometry(transform);
+            this.ToStartingPoint();
+
+            return new Point(row, column);
+        }
+
+        private bool IsItCollides()
+        {
+            for (int i = this.Bubbles.Count - 1; i >= 0; i--)
+            {
+                foreach (Bubble item in this.Bubbles[i])
+                {
+                    if (item.ColorNumber >= 0)
+                    {
+                        if (this.ThePlayer.Bullet.CollidesWith(item))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private List<Bubble> FindSameColors(int row, int column)
+        {
+            this.ResetProcessed();
+
+            List<Bubble> foundBubbles = new List<Bubble>();
+            Queue<Bubble> toprocess = new Queue<Bubble>();
+
+            this.Bubbles[row][column].Processed = true;
+            int color = this.Bubbles[row][column].ColorNumber;
+            toprocess.Enqueue(this.Bubbles[row][column]);
+
+            while (toprocess.Count > 0)
+            {
+                Bubble current = toprocess.Dequeue();
+
+                if (current.ColorNumber == color)
+                {
+                    foundBubbles.Add(current);
+
+                    List<Bubble> neighbours = this.GetNeighbours(current);
+
+                    foreach (Bubble item in neighbours)
+                    {
+                        if (item.Processed == false && item.ColorNumber >= 0)
+                        {
+                            item.Processed = true;
+                            toprocess.Enqueue(item);
+                        }
+                    }
+                }
+            }
+
+            return foundBubbles;
+        }
+
+        private void FindFloatings()
+        {
+            this.ResetProcessed();
+
+            foreach (Bubble[] arr in this.Bubbles)
+            {
+                foreach (Bubble item in arr)
+                {
+                    if (!item.Processed && item.ColorNumber >= 0)
+                    {
+                        item.Processed = true;
+                        Queue<Bubble> toprocess = new Queue<Bubble>();
+                        List<Bubble> cluster = new List<Bubble>();
+                        toprocess.Enqueue(item);
+
+                        while (toprocess.Count > 0)
+                        {
+                            Bubble current = toprocess.Dequeue();
+                            cluster.Add(current);
+                            List<Bubble> neighbours = this.GetNeighbours(current);
+                            foreach (Bubble n in neighbours)
+                            {
+                                if (!n.Processed && n.ColorNumber >= 0)
+                                {
+                                    n.Processed = true;
+                                    toprocess.Enqueue(n);
+                                }
+                            }
+                        }
+
+                        bool floating = true;
+                        foreach (Bubble b in cluster)
+                        {
+                            Rect bounds = b.Item.Bounds;
+                            int row = this.Grid.GetRowIndex(bounds.Y);
+
+                            if (row == 0)
+                            {
+                                floating = false;
+                            }
+                        }
+
+                        if (floating)
+                        {
+                            foreach (Bubble b in cluster)
+                            {
+                                b.ColorNumber = -1;
+                            }
+
+                            this.Scores.AddtoScore(cluster.Count);
+                        }
+                        }
+                    }
+                }
+            }
+
+        private List<Bubble> GetNeighbours(Bubble current)
+        {
+            List<Bubble> neighbours = new List<Bubble>();
+            Rect bounds = current.Item.Bounds;
+            int row = this.Grid.GetRowIndex(bounds.Y);
+            int column = this.Grid.GetColumnIndex(bounds.X, row);
+
+            if ((column - 1) >= 0)
+            {
+                neighbours.Add(this.Bubbles[row][column - 1]);
+            }
+
+            if ((column + 1) < 10)
+            {
+                neighbours.Add(this.Bubbles[row][column + 1]);
+            }
+
+            if (row % 2 == 0)
+            {
+                if ((row - 1) >= 0)
+                {
+                    if ((column - 1) >= 0)
+                    {
+                        neighbours.Add(this.Bubbles[row - 1][column - 1]);
+                    }
+
+                    neighbours.Add(this.Bubbles[row - 1][column]);
+                }
+
+                if ((row + 1) < 15)
+                {
+                    if ((column - 1) >= 0)
+                    {
+                        neighbours.Add(this.Bubbles[row + 1][column - 1]);
+                    }
+
+                    neighbours.Add(this.Bubbles[row + 1][column]);
+                }
+            }
+            else
+            {
+                if ((row - 1) >= 0)
+                {
+                    if ((column + 1) < 10)
+                    {
+                        neighbours.Add(this.Bubbles[row - 1][column + 1]);
+                    }
+
+                    neighbours.Add(this.Bubbles[row - 1][column]);
+                }
+
+                if ((row + 1) < 15)
+                {
+                    if ((column + 1) <10)
+                    {
+                        neighbours.Add(this.Bubbles[row + 1][column + 1]);
+                    }
+
+                    neighbours.Add(this.Bubbles[row + 1][column]);
+                }
+            }
+
+            return neighbours;
+        }
+
+        private void ResetProcessed()
+        {
+            foreach (Bubble[] arr in this.Bubbles)
+            {
+                foreach (Bubble item in arr)
+                {
+                    item.Processed = false;
+                }
+            }
+        }
+
         private void ColorsLeft()
         {
             List<int> colors = new List<int>();
@@ -479,11 +468,8 @@ namespace Oenik_prog3_2017osz_iapw0k
                     }
 
                     this.ThePlayer.NextBullets[1].ColorNumber = i;
-
                 }
-            }
-
-            
+                }
         }
     }
 }
