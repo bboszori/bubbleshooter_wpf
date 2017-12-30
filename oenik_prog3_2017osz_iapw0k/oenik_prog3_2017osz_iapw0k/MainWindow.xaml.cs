@@ -11,6 +11,10 @@ namespace Oenik_prog3_2017osz_iapw0k
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainWindow"/> class.
+        /// A MainWindow inicializása.
+        /// </summary>
         public MainWindow()
         {
             this.InitializeComponent();

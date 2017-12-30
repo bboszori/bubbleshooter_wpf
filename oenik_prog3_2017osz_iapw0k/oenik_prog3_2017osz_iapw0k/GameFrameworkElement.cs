@@ -13,12 +13,19 @@ namespace Oenik_prog3_2017osz_iapw0k
     using System.Windows.Media.Imaging;
     using System.Windows.Threading;
 
+    /// <summary>
+    /// A játék megjelenítése.
+    /// </summary>
     internal class GameFrameworkElement : FrameworkElement
     {
         private Game game;
         private DispatcherTimer timer;
         private ImageBrush bg;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameFrameworkElement"/> class.
+        /// A Gameframework element létrehozása.
+        /// </summary>
         public GameFrameworkElement()
         {
             this.Loaded += this.GameFrameworkElement_Loaded;
@@ -32,6 +39,7 @@ namespace Oenik_prog3_2017osz_iapw0k
             }
         }
 
+        /// <inheritdoc/>
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
@@ -74,6 +82,7 @@ namespace Oenik_prog3_2017osz_iapw0k
                 {
                     this.DrawGameOver(drawingContext);
                 }
+
                 if (this.game.CheckIfWin())
                 {
                     this.DrawNextLevel(drawingContext);
@@ -220,7 +229,6 @@ namespace Oenik_prog3_2017osz_iapw0k
             drawingContext.DrawRectangle(Brushes.Black, null, new Rect(0, 0, this.ActualWidth, this.ActualHeight));
             drawingContext.DrawText(text1, new Point((this.ActualWidth / 2) - (text1.Width / 2), (this.ActualHeight / 2) - (2 * text1.Height)));
             drawingContext.DrawText(text2, new Point((this.ActualWidth / 2) - (text2.Width / 2), (this.ActualHeight / 2) + text1.Height));
-
         }
 
         private void DrawNextLevel(DrawingContext drawingContext)
@@ -242,9 +250,8 @@ namespace Oenik_prog3_2017osz_iapw0k
                 Brushes.White);
 
             drawingContext.DrawRectangle(Brushes.Black, null, new Rect(0, 0, this.ActualWidth, this.ActualHeight));
-            drawingContext.DrawText(text1, new Point((this.ActualWidth / 2) - (text1.Width / 2), (this.ActualHeight / 2) - (2* text1.Height)));
+            drawingContext.DrawText(text1, new Point((this.ActualWidth / 2) - (text1.Width / 2), (this.ActualHeight / 2) - (2 * text1.Height)));
             drawingContext.DrawText(text2, new Point((this.ActualWidth / 2) - (text2.Width / 2), (this.ActualHeight / 2) + text1.Height));
-
         }
 
         private void DrawLevel(DrawingContext drawingContext)

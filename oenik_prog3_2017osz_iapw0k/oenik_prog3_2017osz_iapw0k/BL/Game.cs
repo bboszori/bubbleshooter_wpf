@@ -9,6 +9,9 @@ namespace Oenik_prog3_2017osz_iapw0k
     using System.Windows;
     using System.Windows.Media;
 
+    /// <summary>
+    /// A játék fő logikáját tartalmazza.
+    /// </summary>
     internal class Game
     {
         private static Random rand = new Random();
@@ -16,6 +19,12 @@ namespace Oenik_prog3_2017osz_iapw0k
         private int screenHeight;
         private int rounds;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Game"/> class.
+        /// A Game objektum létrehozása.
+        /// </summary>
+        /// <param name="screenWidth">A pálya szélessége.</param>
+        /// <param name="screenHeight">A pálya hossza.</param>
         public Game(int screenWidth, int screenHeight)
         {
             this.screenWidth = screenWidth;
@@ -25,16 +34,39 @@ namespace Oenik_prog3_2017osz_iapw0k
             this.ToStartingState();
         }
 
+        /// <summary>
+        /// Gets or sets of the player instance.
+        /// A játékos objektum létrehozása.
+        /// </summary>
         public Player ThePlayer { get; set; }
 
+        /// <summary>
+        /// Gets or sets of the Levels object.
+        ///  Levels objektum létrehozása.
+        /// </summary>
         public Levels Level { get; set; }
 
+        /// <summary>
+        /// Gets or sets of the GameGrid object.
+        /// A GameGrid objektum létrehozása.
+        /// </summary>
         public GameGrid Grid { get; set; }
 
+        /// <summary>
+        /// Gets or sets of Scores object.
+        /// A pontokat kezelő objektum létrehozása.
+        /// </summary>
         public Scores Scores { get; set; }
 
+        /// <summary>
+        /// Gets or sets of the list of bubbles.
+        /// A pályát alkotó buborék tömb.
+        /// </summary>
         public List<Bubble[]> Bubbles { get; set; }
 
+        /// <summary>
+        /// A játék kezdőállapotba való állítása.
+        /// </summary>
         public void ToStartingState()
         {
             this.Grid = new GameGrid();
@@ -62,6 +94,17 @@ namespace Oenik_prog3_2017osz_iapw0k
             }
         }
 
+        /// <summary>
+        /// Egy fordulót vezet végig a játékban:
+        /// Ellenőrzi, hogy a kilőtt buborék, nem-e ütközött valamibe
+        ///  - ha igen, akkor megnézi, hogy van-e találat (3-nál több azonos színű buborék)
+        ///     ha van, akkor eltünteti a kilőtt és a lebegő buborékokat,
+        ///     ha nem volt találat, akkor hozzácsatolj a tömbhöz a kilőtt buborékot is, és ha szükséges új sort fűz a tömbhöz;
+        /// - a nem ütközött semmibe, akkor tovább mozgatja, és megnézi, mozgatható-e még tovább.
+        ///     Ha nem (azaz a pálya tetejébe ütközött, akkor megnézi, hogy van-e találat (3-nál több azonos színű buborék)
+        ///     ha van, akkor eltünteti a kilőtt és a lebegő buborékokat,
+        ///     ha nem volt találat, akkor hozzácsatolj a tömbhöz a kilőtt buborékot is, és ha szükséges új sort fűz a tömbhöz.
+        /// </summary>
         public void DoTurn()
         {
             if (this.IsItCollides())
@@ -125,14 +168,10 @@ namespace Oenik_prog3_2017osz_iapw0k
             }
         }
 
-        public void ToStartingPoint()
-        {
-            double posX = this.screenWidth / 2;
-            double posY = this.screenHeight - (this.Grid.BubbleSize / 2);
-            Point location = new Point(posX, posY);
-            this.ThePlayer.Bullet.Item = new EllipseGeometry(location, this.Grid.BubbleSize / 2, this.Grid.BubbleSize / 2);
-        }
-
+        /// <summary>
+        /// Ellenőrzi, hogy nem-e vesztettük el a játékot (azaz, a legalsó sorban van-e buborék).
+        /// </summary>
+        /// <returns>Igaz értéket ad vissza, ha vesztettünk.</returns>
         public bool CheckIfLoose()
         {
             int i = 0;
@@ -145,6 +184,10 @@ namespace Oenik_prog3_2017osz_iapw0k
             return i < 10;
         }
 
+        /// <summary>
+        /// Ellenőrzi, hogy nem-e nyertük meg a játékot (azaz, a legfelső sorban van-e buborék).
+        /// </summary>
+        /// <returns>Igaz értéket ad vissza, ha már nincs több buborék.</returns>
         public bool CheckIfWin()
         {
             int i = 0;
@@ -157,6 +200,9 @@ namespace Oenik_prog3_2017osz_iapw0k
             return i >= 10;
         }
 
+        /// <summary>
+        /// Egy új sort ad hozzá a tömb elejéhez.
+        /// </summary>
         public void AddNewLine()
         {
             Bubble[] newLine = new Bubble[10];
@@ -192,6 +238,9 @@ namespace Oenik_prog3_2017osz_iapw0k
             this.FindFloatings();
         }
 
+        /// <summary>
+        /// Megcseréli az épp kilőhető buborékot a következővel.
+        /// </summary>
         public void SwitchBullets()
         {
             int c;
@@ -392,7 +441,7 @@ namespace Oenik_prog3_2017osz_iapw0k
 
                 if ((row + 1) < 15)
                 {
-                    if ((column + 1) <10)
+                    if ((column + 1) < 10)
                     {
                         neighbours.Add(this.Bubbles[row + 1][column + 1]);
                     }
@@ -444,7 +493,6 @@ namespace Oenik_prog3_2017osz_iapw0k
                     }
 
                     this.ThePlayer.Bullet.ColorNumber = i;
-
                 }
 
                 if (!colors.Contains(this.ThePlayer.NextBullets[0].ColorNumber))
@@ -456,7 +504,6 @@ namespace Oenik_prog3_2017osz_iapw0k
                     }
 
                     this.ThePlayer.NextBullets[0].ColorNumber = i;
-
                 }
 
                 if (!colors.Contains(this.ThePlayer.NextBullets[1].ColorNumber))
@@ -470,6 +517,14 @@ namespace Oenik_prog3_2017osz_iapw0k
                     this.ThePlayer.NextBullets[1].ColorNumber = i;
                 }
                 }
+        }
+
+        private void ToStartingPoint()
+        {
+            double posX = this.screenWidth / 2;
+            double posY = this.screenHeight - (this.Grid.BubbleSize / 2);
+            Point location = new Point(posX, posY);
+            this.ThePlayer.Bullet.Item = new EllipseGeometry(location, this.Grid.BubbleSize / 2, this.Grid.BubbleSize / 2);
         }
     }
 }

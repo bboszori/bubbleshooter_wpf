@@ -8,6 +8,9 @@ namespace Oenik_prog3_2017osz_iapw0k
     using System.Windows;
     using System.Windows.Media;
 
+    /// <summary>
+    /// A játékot alkotó buborékot reprezentálja.
+    /// </summary>
     internal class Bubble : GameItem
     {
         private static Random rand = new Random();
@@ -16,6 +19,13 @@ namespace Oenik_prog3_2017osz_iapw0k
         private double posX;
         private double posY;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Bubble"/> class.
+        /// Egy új Bubble objektum létrehozása.
+        /// </summary>
+        /// <param name="location">Az sor és oszlopszáma a buboréknak.</param>
+        /// <param name="bubbleSize">A buborék nagysága.</param>
+        /// <param name="nrofColors">Az alkalmazható színek nagysága.</param>
         public Bubble(Point location, double bubbleSize, int nrofColors)
         {
             this.Location = location;
@@ -24,6 +34,14 @@ namespace Oenik_prog3_2017osz_iapw0k
             this.Processed = false;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Bubble"/> class.
+        /// Egy új Bubble objektum létrehozása.
+        /// </summary>
+        /// <param name="screenHeight">A pálya hossza.</param>
+        /// <param name="screeWidth">A pálya szélessége.</param>
+        /// <param name="bubbleSize">A buborék nagysága.</param>
+        /// <param name="nrofColors">Az alkalmazható színek nagysága.</param>
         public Bubble(int screenHeight, int screeWidth, double bubbleSize, int nrofColors)
         {
             this.screenheight = screenHeight - 15;
@@ -36,12 +54,28 @@ namespace Oenik_prog3_2017osz_iapw0k
             this.Processed = false;
         }
 
+        /// <summary>
+        /// Gets or sets of bullet location.
+        /// A játékos helyzete.
+        /// </summary>
         public Point Location { get; set; }
 
+        /// <summary>
+        /// Gets or sets of bullet's velocity.
+        /// A kilőtt buborék sebessége.
+        /// </summary>
         public int Velocity { get; set; }
 
+        /// <summary>
+        /// Gets or sets the color of actual bubble.
+        /// A buborék színének száma.
+        /// </summary>
         public int ColorNumber { get; set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether gets or sets if a bubble is processed, or not.
+        /// Tárolja, hogy a buborékot, már feldolgoztuk-e.
+        /// </summary>
         public bool Processed { get; set; }
     }
 }

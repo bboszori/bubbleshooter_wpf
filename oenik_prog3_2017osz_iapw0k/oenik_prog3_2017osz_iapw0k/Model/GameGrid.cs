@@ -11,27 +11,44 @@ namespace Oenik_prog3_2017osz_iapw0k
     using System.Threading.Tasks;
     using System.Windows;
 
+    /// <summary>
+    /// A pálya adatainak kezelése.
+    /// </summary>
     internal class GameGrid
     {
         private double bubbleSize = 28.5;
         private double rowheight = 25;
         private double screenWidth = 300;
-        private double screenHeight = 400;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GameGrid"/> class.
+        /// Új pálya létrehozása.
+        /// </summary>
         public GameGrid()
         {
-            this.LastRow = 4;
             this.bubbleSize = 28.5;
         }
 
-        public double BubbleSize { get { return this.bubbleSize; } }
+        /// <summary>
+        /// Gets the bubblesize.
+        /// A buborék mérete.
+        /// </summary>
+        public double BubbleSize
+        {
+            get { return this.bubbleSize; }
+        }
 
+        /// <summary>
+        /// Gets the screenwidth.
+        /// A pálya szélessége.
+        /// </summary>
         public double ScreenWidth { get; }
 
-        public double ScreenHeight { get; }
-
-        public double LastRow { get; set; }
-
+        /// <summary>
+        /// Az y koordináta alapján, megadja hogy melyik sorban helyezkedik el az adott buborék.
+        /// </summary>
+        /// <param name="y">A buborék helyzetének y koordinátája.</param>
+        /// <returns>A sor számát adja vissza.</returns>
         public int GetRowIndex(double y)
         {
             if (y < 0)
@@ -51,6 +68,12 @@ namespace Oenik_prog3_2017osz_iapw0k
             }
         }
 
+        /// <summary>
+        /// Az y koordináta és a sor száma alapján, megadja hogy melyik oszlopban helyezkedik el az adott buborék.
+        /// </summary>
+        /// <param name="x">>A buborék helyzetének x koordinátája.</param>
+        /// <param name="row">A uborék sorának száma.</param>
+        /// <returns>Az oszlop számát adja vissza.</returns>
         public int GetColumnIndex(double x, int row)
         {
             if (x < 0)
@@ -82,6 +105,12 @@ namespace Oenik_prog3_2017osz_iapw0k
             }
         }
 
+        /// <summary>
+        /// A sor és az oszlop szám alapján megadja a buborék koordinátáit.
+        /// </summary>
+        /// <param name="row">A sor száma.</param>
+        /// <param name="column">Az oszlop száma.</param>
+        /// <returns>A buborék koorinátáit adja vissza.</returns>
         public Point GetLocation(int row, int column)
         {
             double posX = 0;
