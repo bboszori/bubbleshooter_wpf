@@ -92,7 +92,7 @@ namespace Oenik_prog3_2017osz_iapw0k
         {
             if (this.Level < 17 && this.NrofColors > 2)
             {
-                if (this.Level % 5 == 0)
+                if (this.Level % 4 == 1)
                 {
                     this.NrofRounds = 5;
                 }

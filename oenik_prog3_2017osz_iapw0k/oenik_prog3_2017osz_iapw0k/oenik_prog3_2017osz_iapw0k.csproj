@@ -70,7 +70,7 @@
     <Compile Include="BL\Game.cs" />
     <Compile Include="BL\GameItem.cs" />
     <Compile Include="GameFrameworkElement.cs" />
-    <Compile Include="Model\GameGrid.cs" />
+    <Compile Include="GameGrid.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
